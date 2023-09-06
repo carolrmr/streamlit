@@ -4,7 +4,7 @@ import numpy as np
 
 st.write("Hello, world!")
 
-t.title('Uber pickups in NYC')
+st.title('Uber pickups in NYC')
 
 
 DATE_COLUMN = 'date/time'
