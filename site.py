@@ -32,15 +32,24 @@ def executar_consulta(conn, query):
         st.error(f"Erro ao executar consulta: {e}")
         return None
 
-# Título do aplicativo
-st.title("Streamlit com PostgreSQL")
+#Título
+st.title("Introdução")
+st.write("Este projeto tem a finalidade de demonstrar como seria o fluxo cadastro de um RN, em um modelo de cartorio online!")
+st.markdown("**Ferramentas utilizadas:**")
+st.markdown("1) PostgreSQL")
+st.markdown("2) Streamlit")
+st.markdown("3) https://render.com")
 
+st.write("Tendo em vista as atividades anteriores realizadas no curso, optei por usar o csv SINASC_RO e importar as informações do mesmo para o PostgreSQL, \
+             após isso, fiz a tratativa dos dados e mantive somente as informações que achei necessárias para o projeto!")
+st.write("Siga abaixo para interagir com o meu cartório online...")
+st.write("")
 # Conectar ao PostgreSQL
 conn = conectar_postgresql()
 
 #Buscando informações no banco de dados
 if conn:
-    st.subheader("Exibindo informações da tabela SINASC_RO")
+    st.subheader("Visualizando os dados presentes no meu postgreSQL")
     query = "select * from bdestudo.public.sinasc_ro;"
     resultado = executar_consulta(conn, query)
 
@@ -52,29 +61,26 @@ else:
     
 if conn:
     #Executando a consulta SQL
-    consulta_sql = "select * from bdestudo.public.sinasc_ro limit 80;"
+    consulta_sql = "select * from bdestudo.public.sinasc_ro limit 100;"
     resultado = executar_consulta(conn, consulta_sql)
     if resultado is not None:
 
     #Criando gráfico de barras
-        st.subheader("Gráfico de Barras (limitado a 80 pessoas)")
+        st.subheader("Criando um Gráfico de Barras")
+        st.write("Coloquei um limit 100 na query de select para que a visualização no gráfico abaixo pudesse ficar legível")
         coluna_para_grafico = st.selectbox("Selecione o campo abaixo para gerar o gráfico:", resultado.columns)
         if coluna_para_grafico:
             st.bar_chart(resultado[coluna_para_grafico])
 else:
     st.warning("Não foi possível obter informações para montar o gráfico de barras")
-
-#
-#
-# 
-   
+    
 #Criando um formulário para registrar novos RNs
 st.subheader('Use o Form abaixo para registrar um RN(Recém-Nascido) no banco de dados!')
-idademae = st.number_input('Idade da Mãe', min_value=0)
-sexo = st.selectbox('Sexo do RN', ['Masculino', 'Feminino'])
-peso = st.number_input('Peso', min_value=0.0)
-idadepai = st.number_input('Idade do Pai', min_value=0)
-nome = st.text_input('Nome completo do RN')
+idademae = st.number_input('Informe a idade da mãe', min_value=0)
+sexo = st.selectbox('Selecione o sexo do RN', ['Masculino', 'Feminino'])
+peso = st.number_input('Informe o peso do RN', min_value=0.0)
+idadepai = st.number_input('Informe a idade do Pai', min_value=0)
+nome = st.text_input('Digite o nome completo do RN')
 
 #Criando o cursor
 cursor = conn.cursor()
@@ -95,7 +101,7 @@ if st.button('Registrar'):
         st.error(f"Erro ao inserir dados: {e}")
 
 #Vamos criar um botão para pesquisar as informações inseridas na etapa anterior, vou criar somente para buscar o parâmetro = nome, pois é mais simples :)
-#Título da aplicação
+# Título da aplicação
 st.subheader('Para pesquisar registro de um RN no banco de dados, preencha o campo abaixo: ')
 #Onde vamos informar o campo para pesquisa
 termo_pesquisa = st.text_input('Digite o nome completo do recém-nascido (case-sensitive):')
